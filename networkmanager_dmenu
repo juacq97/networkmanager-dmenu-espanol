@@ -41,7 +41,7 @@ CONNS = CLIENT.get_connections()
 if sys.version_info.major < 3:
     str = unicode
 
-def dmenu_cmd(num_lines, prompt="Networks", active_lines=None):  # pylint: disable=too-many-branches
+def dmenu_cmd(num_lines, prompt="Redes", active_lines=None):  # pylint: disable=too-many-branches
     """Parse config.ini if it exists and add options to the dmenu command
 
     Args: args - num_lines: number of lines to display
@@ -66,7 +66,7 @@ def dmenu_cmd(num_lines, prompt="Networks", active_lines=None):  # pylint: disab
             dmenu_command = command[0]
             dmenu_args = command[1:]
             del args_dict["dmenu_command"]
-        if "p" in args_dict and prompt == "Networks":
+        if "p" in args_dict and prompt == "Redes":
             prompt = args_dict["p"]
             del args_dict["p"]
         elif "p" in args_dict:
@@ -98,7 +98,7 @@ def dmenu_cmd(num_lines, prompt="Networks", active_lines=None):  # pylint: disab
             if active_lines:
                 dmenu_args.extend(["-a", ",".join([str(num)
                                                    for num in active_lines])])
-    if prompt == "Passphrase":
+    if prompt == "Contraseña":
         if conf.has_section('dmenu_passphrase'):
             args = conf.items('dmenu_passphrase')
             args_dict.update(args)
@@ -129,7 +129,7 @@ def choose_adapter(client):
     elif devices:
         return devices[0]
     device_names = "\n".join([d.get_iface() for d in devices]).encode(ENC)
-    sel = Popen(dmenu_cmd(len(devices), "CHOOSE ADAPTER:"),
+    sel = Popen(dmenu_cmd(len(devices), "Elija adaptador:"),
                 stdin=PIPE,
                 stdout=PIPE,
                 env=ENV).communicate(input=device_names)[0].decode(ENC)
@@ -155,17 +155,17 @@ def create_other_actions(client):
 
     """
     networking_enabled = client.networking_get_enabled()
-    networking_action = "Disable" if networking_enabled else "Enable"
+    networking_action = "Desactivar" if networking_enabled else "Activar"
     wifi_enabled = client.wireless_get_enabled()
-    wifi_action = "Disable" if wifi_enabled else "Enable"
+    wifi_action = "Desactivar" if wifi_enabled else "Activar"
     actions = [Action("{} Wifi".format(wifi_action), toggle_wifi,
                       not wifi_enabled),
-               Action("{} Networking".format(networking_action),
+               Action("{} red".format(networking_action),
                       toggle_networking, not networking_enabled),
-               Action("Launch Connection Manager", launch_connection_editor),
-               Action("Delete a Connection", delete_connection)]
+               Action("Lanzar administrador de redes", launch_connection_editor),
+               Action("Eliminar una conexión", delete_connection)]
     if wifi_enabled:
-        actions.append(Action("Rescan Wifi Networks", rescan_wifi))
+        actions.append(Action("Escanear redes WiFi", rescan_wifi))
     return actions
 
 def rescan_wifi():
@@ -369,7 +369,7 @@ def create_wwan_actions(client):
 
     """
     wwan_enabled = client.wwan_get_enabled()
-    wwan_action = "Disable" if wwan_enabled else "Enable"
+    wwan_action = "Desactivar" if wwan_enabled else "Activar"
     return [Action("{} WWAN".format(wwan_action), toggle_wwan, not wwan_enabled)]
 
 
